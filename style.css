@@ -1,0 +1,46 @@
+Body{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: sans-serif;
+	color: #777777;
+	overflow: hidden;
+}
+
+.board{
+	
+}
+
+.row{
+	display: flex;
+}
+.cell{
+	border: 1px solid white;
+    background: #ebebeb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes slidein {
+  from {
+    border: 1px solid white;
+  }
+
+  to {
+    border: 1px solid #a4a4a4;
+  }
+}
+.cell.selected{
+	animation-duration: 0.5s;
+	animation-name: slidein;
+  	animation-iteration-count: infinite;
+  	animation-direction: alternate;
+}

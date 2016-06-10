@@ -1,0 +1,12 @@
+{
+  "name": "text-automata",
+  "authors": [
+    "satchelspencer <satchelspencer@gmail.com>"
+  ],
+  "main": "index.html",
+  "private": true,
+  "dependencies": {
+    "jquery": "^3.0.0",
+    "underscore": "^1.8.3"
+  }
+}
