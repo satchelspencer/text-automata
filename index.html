@@ -7,7 +7,7 @@
 		<script src="bower_components/underscore/underscore-min.js"></script>
 		<script>
 			var cellSize = 15;
-			var boardSize = 40;
+			var boardSize = 30;
 			var cells = _.map(new Array(boardSize), function(row){
 			    return new Array(boardSize);
 			});
@@ -57,22 +57,21 @@
 			}
 
 			function apply(cells, predicate){
-				ncels = JSON.parse(JSON.stringify(cells));
-				return _.map(ncels, function(row, i){
-					return _.map(row, function(cell, j){
-						return predicate(cell, i, j, cells);
+				_.each(cells, function(row, i){
+					_.each(row, function(cell, j){
+						cells[i][j] = predicate(cell, i, j, cells);
 					})
 				})
 			}
 
 			function step(predicate){
-				cells = apply(cells, predicate);
+				apply(cells, predicate);
 				display(cells);
 			}
 
 			function neighbors(i, j, cells){
 				var n = [];
-				var span = _.range(-2, 3);
+				var span = _.range(-1, 2);
 				_.each(span, function(io){
 					_.each(span, function(jo){
 						n.push(cells[i+io]&&cells[i+io][j+jo]);
@@ -84,6 +83,54 @@
 			function nei(val, i, j, cells){
 				var n = _.compact(neighbors(i, j, cells)).length;
 				return n > 4 || n < 3?'':'o';
+			}
+
+			var dictionary = ['the', 'real', 'lemon', 'squeezer', 'remains', 'unfound', 'drills', 'emaild'];
+			function speller(val, i, j, cells){
+				if(val) return val; //no death yet
+				else{
+					var dirs = [[0,1],[1,0],[0,-1],[-1,0]];
+					var possibles = _.chain(dirs).map(function(dir){
+						var ii = i;
+						var ji = j;
+						var n = 1;
+						var word = [];
+						while(n){
+							ii += dir[0];
+							ji += dir[1];
+							n = cells[ii]&&cells[ii][ji];
+							if(n){
+								if(dir[1]+dir[0] < 0) word.push(n);
+								 word.unshift(n);
+							}
+						}
+						if(word.length) {
+							var runners = _.filter(dictionary, function(dword){
+								return _.first(dword, word.length).join('') == word.join('');
+							})
+							var chosen = runners[Math.floor(Math.random()*runners.length)];
+							return chosen&&chosen[word.length]; //next char
+						}
+					}).compact().uniq().value();
+					if(possibles.length == 1) return possibles[0];
+					else return '';
+				}
+			}
+
+			function speller2(val, i, j, cells){
+				if(val) return val; //no death yet
+				else{
+					var dirs = [[0,1],[1,0],[0,-1],[-1,0]];
+					var possibles = _.chain(dirs).map(function(dir){
+						var ii = i;
+						var ji = j;
+						var reverse = dir[0]+dir[1] < 0;
+						
+					}).compact().value();
+					if(possibles.length != 1) return '';
+					else return possibles[0];
+					return _.compact(possibles)[0]||'';
+				}
 			}
 		</script>
 	</head>
