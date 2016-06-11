@@ -57,21 +57,43 @@
 			}
 
 			function apply(cells, predicate){
+				return _.map(cells, function(row, i){
+					return _.map(row, function(cell, j){
+						// $('.cell').removeClass('on');
+						// board.children().eq(i).children().eq(j).addClass('on');
+						return predicate(cell, i, j, cells);
+					})
+				})
+			}
+
+			function applySeq(cells, predicate){
 				_.each(cells, function(row, i){
 					_.each(row, function(cell, j){
 						cells[i][j] = predicate(cell, i, j, cells);
 					})
 				})
+				return cells;
+			}
+
+			function applyRandomly(cells, predicate){
+				var rowindices = _.shuffle(_.range(cells.length));
+				_.each(rowindices, function(i){
+					var colindicies = _.shuffle(_.range(cells[i].length));
+					_.each(colindicies, function(j){
+						cells[i][j] = predicate(cells[i][j], i, j, cells);
+					})
+				})
+				return cells;
 			}
 
 			function step(predicate){
-				apply(cells, predicate);
+				cells = applyRandomly(cells, predicate);
 				display(cells);
 			}
 
 			function neighbors(i, j, cells){
 				var n = [];
-				var span = _.range(-1, 2);
+				var span = _.range(-4, 5);
 				_.each(span, function(io){
 					_.each(span, function(jo){
 						n.push(cells[i+io]&&cells[i+io][j+jo]);
@@ -82,11 +104,11 @@
 
 			function nei(val, i, j, cells){
 				var n = _.compact(neighbors(i, j, cells)).length;
-				return n > 4 || n < 3?'':'o';
+				return n < 5 || n > 10 ?'':'x';
 			}
 
 			var dictionary = ['the', 'real', 'lemon', 'squeezer', 'remains', 'unfound', 'drills', 'emaild'];
-			function speller(val, i, j, cells){
+			function spellero(val, i, j, cells){
 				if(val) return val; //no death yet
 				else{
 					var dirs = [[0,1],[1,0],[0,-1],[-1,0]];
@@ -117,19 +139,37 @@
 				}
 			}
 
-			function speller2(val, i, j, cells){
+			function speller(val, i, j, cells){
 				if(val) return val; //no death yet
 				else{
-					var dirs = [[0,1],[1,0],[0,-1],[-1,0]];
+					var dirs = [[0,1],[1,0],[0,-1],[-1,0]]; //down, right, up, left
+					var neighbors = 0;
 					var possibles = _.chain(dirs).map(function(dir){
+						if(cells[i+dir[0]]&&cells[i+dir[0]][j+dir[1]]) neighbors++; //if its even there
 						var ii = i;
 						var ji = j;
 						var reverse = dir[0]+dir[1] < 0;
-						
+						var n; //next char
+						var segment = '';
+						do{	
+							ii += dir[0];
+							ji += dir[1];
+							n = cells[ii]&&cells[ii][ji];
+							if(n){
+								if(reverse) segment = n+segment;
+								else segment = segment+n;
+							}
+						}while(n);
+						if(segment.length){
+							var word = _.find(dictionary, function(dword){
+								var dwordsegment = _[reverse?'first':'last'](dword, segment.length);
+								return dwordsegment.join('') == segment;
+							})
+							return word&&word[reverse?segment.length:(word.length-segment.length-1)]; //
+						}
 					}).compact().value();
-					if(possibles.length != 1) return '';
+					if(possibles.length != 1 || neighbors > 1) return '';
 					else return possibles[0];
-					return _.compact(possibles)[0]||'';
 				}
 			}
 		</script>

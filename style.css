@@ -9,7 +9,7 @@ Body{
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-family: sans-serif;
+	font-family: monospace;
 	color: #777777;
 	overflow: hidden;
 }
@@ -43,4 +43,7 @@ Body{
 	animation-name: slidein;
   	animation-iteration-count: infinite;
   	animation-direction: alternate;
+}
+.cell.on{
+	background: cyan;
 }
