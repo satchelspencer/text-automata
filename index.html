@@ -3,11 +3,11 @@
 	<head>
 		<title>text-automata</title>
 		<link href="style.css" rel="stylesheet">
-		<script src="bower_components/jquery/dist/jquery.min.js"></script>
-		<script src="bower_components/underscore/underscore-min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="  crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 		<script>
 			var cellSize = 13;
-			var boardSize = 20;
+			var boardSize = 30;
 			var cells = _.map(new Array(boardSize), function(row){
 			    return _.map(new Array(boardSize), function(){
 			    	return {
@@ -40,6 +40,7 @@
 						row.append(cell);
 					})
 					board.append(row);
+					setInterval(function(){step(speller)})
 				})
 
 				$(window).on('keyup', function(e){
@@ -54,7 +55,7 @@
 			})
 
 			/* display a given state */
-			var agelimit = 15;
+			var agelimit = 8;
 			function display(cells){
 				board.children().each(function(i){
 					$(this).children().each(function(j){
@@ -105,7 +106,7 @@
 
 			var dictionary = ["child","keep","enter","california","porn","share","similar","garden","schools","million","added","reference","companies","listed","baby","learning","energy","run","delivery","net","popular","term","film","stories","put","computers","journal","reports","try","welcome","central","images","president","notice","god","original","head","radio","until","cell","color","self","council","away","includes","track","australia","discussion","archive","once","others","entertainment","agreement","format","least","society","months","log","safety","friends","sure","faq","trade","edition","cars","messages","marketing","tell","further","updated","association","able","having","provides","david","fun","already","green","studies","close","common","drive","specific","several","gold","feb","living","sep","collection","called","short","arts","lot","ask","display","limited","powered","solutions","means","director","daily","beach","past","natural","whether","due","electronics","five","upon","period","planning","database","says","official","weather","mar","land","average","done","technical","window","france","pro","region","island","record","direct","microsoft","conference","environment","records","district","calendar","costs","style","url","front","statement","update","simple","quick","none","wireless","license","paul","friday","lake","whole","annual","published","later","basic","sony","shows","corporate","google","church","method","purchase","customers","active","response","practice","hardware","figure","materials","fire","holiday","chat","enough","designed","along","among","death","writing","speed","html","countries","loss","face","brand","discount","higher","effects","created","remember","standards","oil","bit","yellow","political","increase","advertise","kingdom","base","near","environmental","thought","stuff","french","storage","oh","japan","doing","loans","shoes","entry"];
 
-			//var dictionary = ['xx'];
+			//var dictionary = ['xxx'];
 
 			function getContSegment(whole, j){
 				var seg = '';
@@ -146,7 +147,7 @@
 				if(!neighborsCount(i, j, cells) && cell.age){
 					cell.v = null;
 					cell.age = 0;
-				}else if(cell.age > agelimit && !cell.word || cell.age > 50){ //kill at 10 for non words, 100 otherwise
+				}else if(cell.age > agelimit && !cell.word || cell.age > 80){ //when to kil for non words/words
 					cell.age = -20;
 					cell.v = null;
 				}else if(!cell.v && cell.age >= 0 && Math.random() < .1){
